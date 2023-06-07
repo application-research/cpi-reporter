@@ -1,14 +1,16 @@
 import os,sys
 import requests
-import yaml
+import yaml,json
 
 # Static settings
 gitea_url = "https://git.estuary.tech"
 gitea_org = "fws-customers"
 
-# Load Gitea API key from local file ~/.gitea_api_key
-with open(os.path.expanduser('~/.gitea_api_key'), 'r') as f:
-    gitea_api_key = f.read().strip()
+# Load Gitea API key from environment variables or from local file ~/.gitea_api_key
+gitea_api_key = os.getenv('GITEA_API_KEY')
+if gitea_api_key is None:
+    with open(os.path.expanduser('~/.gitea_api_key'), 'r') as f:
+        gitea_api_key = f.read().strip()
 
 # Get the list of repos from Git
 try:
@@ -53,6 +55,4 @@ for customer in list_of_repos:
     customers_list.append(customer_dict)
 
 # Print the complete list of customers
-print(customers_list)
-
-# Write to file
+print(json.dumps(customers_list))

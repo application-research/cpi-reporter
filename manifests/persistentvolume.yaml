@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cpi-reporter-storage
+  namespace: production-fdt
+spec:
+  capacity:
+    storage: 1Ei
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: moosefs-localmount
+  hostPath:
+    path: /mnt/mfs/jobs/cpi-reporter

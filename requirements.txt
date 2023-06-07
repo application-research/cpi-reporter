@@ -1,1 +1,3 @@
 giteapy
+requests
+pyyaml

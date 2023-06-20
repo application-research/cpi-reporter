@@ -1,0 +1,32 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cpi-reporter
+  namespace: production-fdt
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: cpi-reporter
+              image: zorlin/cpi-reporter:latest
+              env:
+                - name: GITEA_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-api-key
+                      key: GITEA_API_KEY
+              securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+              volumeMounts:
+                - name: storage
+                  mountPath: /storage
+          volumes:
+            - name: storage
+              persistentVolumeClaim:
+                claimName: cpi-reporter-storage
+          restartPolicy: OnFailure

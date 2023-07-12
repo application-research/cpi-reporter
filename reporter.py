@@ -38,6 +38,17 @@ for customer in list_of_repos:
 
     # What products does the customer have?
     customer_products = customer_details['global']['products']
+    # If we find ADMIN_API_KEY in one of the products, censor it
+    for product, details in customer_products.items():
+        # If we have custom environment variables
+        if 'customEnv' in details:
+            # Load the customEnv details
+            customEnv = yaml.safe_load(details['customEnv'])
+            if 'ADMIN_API_KEY' in customEnv:
+                customEnv["ADMIN_API_KEY"] = 'REDACTED'
+            # Overwrite the details with the new customEnv contents
+            details['customEnv'] = yaml.dump(customEnv)
+
     # What wallet address is the customer using?
     customer_wallet_address = customer_details['global']['customer']['walletAddress']
     customer_wallet_name = customer_details['global']['customer']['walletName']
